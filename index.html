@@ -915,7 +915,7 @@ function solutionText(q){
 }
 function toggleSolution(n){$('solution'+n).classList.toggle('show')}
 // Dán URL Web App Google Apps Script (/exec) vào đây nếu muốn đồng bộ BXH online nhiều thiết bị
-const BXH_API_URL = "";
+const BXH_API_URL = "https://script.google.com/macros/s/AKfycbxZ811qW5TgVgasGvHPl0E5dEexoK2RWPVD-Mlyz_AVbFbiZQIgSRdNLy8IoKC2n_GYbQ/exec";
 const BXH_STORAGE_KEY = "liemsay_bxh_LSKH_02";
 const SEED_BXH = [];
 let lastAttemptId = null;
@@ -951,8 +951,11 @@ async function fetchSortedBxh(){
  if(BXH_API_URL){
   try{
    const res = await fetch(BXH_API_URL);
-   const remote = await res.json();
-   if(Array.isArray(remote) && remote.length){
+   const payload = await res.json();
+   const remote = Array.isArray(payload)
+    ? payload
+    : (Array.isArray(payload.data) ? payload.data : []);
+   if(remote.length){
     list = remote.map(r => ({
      name: r.ten || r.name || "Thí sinh",
      score: Number(r.diem ?? r.score ?? 0),
